@@ -1,0 +1,9 @@
+probes/Makefile.dev
+probes/gemm_probe
+probes/uma_bw
+probes/uma_atomic
+results/
+__pycache__/
+*.pyc
+/tmp/
+probes/*.json

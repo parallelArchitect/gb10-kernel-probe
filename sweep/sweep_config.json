@@ -1,0 +1,344 @@
+{
+  "meta": {
+    "tool": "gb10-kernel-probe",
+    "version": "0.1.0",
+    "description": "CUTLASS sweep config for empirical SM121 kernel scheduling characterization",
+    "target_platform": "gb10",
+    "validated_driver": "580.142",
+    "validated_cuda": "13.0",
+    "notes": "Pascal SM6.1 used for local dev/validation. GB10 SM121 is the target for characterization data."
+  },
+  "fixed_dimensions": {
+    "M": 4096,
+    "N": 4096,
+    "K": 4096,
+    "warmup_iterations": 10,
+    "timed_iterations": 100
+  },
+  "sweep_axes": {
+    "threadblock_shape": [
+      {
+        "m": 64,
+        "n": 64,
+        "k": 32
+      },
+      {
+        "m": 64,
+        "n": 128,
+        "k": 32
+      },
+      {
+        "m": 128,
+        "n": 64,
+        "k": 32
+      },
+      {
+        "m": 128,
+        "n": 128,
+        "k": 32
+      },
+      {
+        "m": 128,
+        "n": 128,
+        "k": 64
+      },
+      {
+        "m": 128,
+        "n": 256,
+        "k": 64
+      },
+      {
+        "m": 256,
+        "n": 128,
+        "k": 64
+      }
+    ],
+    "warp_shape": [
+      {
+        "m": 32,
+        "n": 32,
+        "k": 32
+      },
+      {
+        "m": 32,
+        "n": 64,
+        "k": 32
+      },
+      {
+        "m": 64,
+        "n": 32,
+        "k": 32
+      },
+      {
+        "m": 64,
+        "n": 64,
+        "k": 32
+      },
+      {
+        "m": 64,
+        "n": 64,
+        "k": 64
+      }
+    ],
+    "stages": [
+      2,
+      3,
+      4,
+      5
+    ],
+    "data_type": [
+      {
+        "a": "f32",
+        "b": "f32",
+        "c": "f32"
+      },
+      {
+        "a": "f16",
+        "b": "f16",
+        "c": "f32"
+      }
+    ],
+    "layout": [
+      {
+        "a": "row",
+        "b": "col"
+      },
+      {
+        "a": "row",
+        "b": "row"
+      }
+    ],
+    "alignment": [
+      8,
+      16
+    ],
+    "mma_instruction": [
+      "mma.sync.m16n8k16",
+      "mma.sync.m16n8k32",
+      "wgmma.m64n128k16",
+      "wgmma.m64n256k16"
+    ],
+    "cluster_shape": [
+      {
+        "x": 1,
+        "y": 1,
+        "z": 1
+      },
+      {
+        "x": 2,
+        "y": 1,
+        "z": 1
+      },
+      {
+        "x": 2,
+        "y": 2,
+        "z": 1
+      }
+    ],
+    "accumulator_type": [
+      "f32",
+      "f16"
+    ]
+  },
+  "gb10_specific": {
+    "bandwidth_pressure": [
+      {
+        "label": "idle",
+        "description": "No concurrent workload. Baseline: GPU read ~161 GB/s.",
+        "concurrent_load": false
+      },
+      {
+        "label": "loaded",
+        "description": "Concurrent inference load active. Baseline: GPU read ~90 GB/s (-44%).",
+        "concurrent_load": true,
+        "load_script": "probes/bw_load.sh"
+      }
+    ],
+    "pcie_check_required": true,
+    "doe_check_required": true,
+    "nvml_clock_mem_na": true,
+    "cupti_uma_blocked": true,
+    "cluster_shape_requires_gb10": true
+  },
+  "output": {
+    "results_dir": "results/",
+    "filename_template": "sweep_{platform}_{timestamp}.jsonl",
+    "fields_per_run": [
+      "platform",
+      "driver",
+      "cuda_version",
+      "timestamp",
+      "tb_shape",
+      "warp_shape",
+      "stages",
+      "data_type",
+      "layout",
+      "alignment",
+      "mma_instruction",
+      "cluster_shape",
+      "bw_pressure_label",
+      "tflops",
+      "occupancy",
+      "registers",
+      "smem_bytes",
+      "instruction_path",
+      "ptx_mma_form",
+      "ptx_barrier_type",
+      "ptx_cp_async",
+      "ptx_tma",
+      "link_state_at_capture",
+      "pre_run_check_result"
+    ]
+  },
+  "pascal_dev_notes": {
+    "description": "Pascal SM6.1 subset for local tool validation only",
+    "skip_axes": [
+      "mma_instruction",
+      "cluster_shape",
+      "gb10_specific.bandwidth_pressure"
+    ],
+    "expected_instruction_paths": [
+      "mma.sync"
+    ],
+    "expected_max_stages": 2,
+    "purpose": "Validate sweep mechanics and JSON output format before GB10 contributor runs"
+  },
+  "fast_sweep": {
+    "threadblock_shape": [
+      {
+        "m": 64,
+        "n": 64,
+        "k": 32
+      },
+      {
+        "m": 128,
+        "n": 128,
+        "k": 32
+      },
+      {
+        "m": 128,
+        "n": 256,
+        "k": 64
+      },
+      {
+        "m": 256,
+        "n": 128,
+        "k": 64
+      }
+    ],
+    "warp_shape": [
+      {
+        "m": 32,
+        "n": 32,
+        "k": 32
+      },
+      {
+        "m": 64,
+        "n": 64,
+        "k": 32
+      }
+    ],
+    "stages": [
+      2,
+      4
+    ],
+    "data_type": [
+      {
+        "a": "f32",
+        "b": "f32",
+        "c": "f32"
+      }
+    ],
+    "layout": [
+      {
+        "a": "row",
+        "b": "col"
+      }
+    ],
+    "alignment": [
+      16
+    ],
+    "accumulator_type": [
+      "f32"
+    ]
+  },
+  "full_sweep": {
+    "threadblock_shape": [
+      {
+        "m": 64,
+        "n": 64,
+        "k": 32
+      },
+      {
+        "m": 64,
+        "n": 128,
+        "k": 32
+      },
+      {
+        "m": 128,
+        "n": 64,
+        "k": 32
+      },
+      {
+        "m": 128,
+        "n": 128,
+        "k": 32
+      },
+      {
+        "m": 128,
+        "n": 128,
+        "k": 64
+      },
+      {
+        "m": 128,
+        "n": 256,
+        "k": 64
+      },
+      {
+        "m": 256,
+        "n": 128,
+        "k": 64
+      }
+    ],
+    "warp_shape": [
+      {
+        "m": 32,
+        "n": 32,
+        "k": 32
+      },
+      {
+        "m": 64,
+        "n": 64,
+        "k": 32
+      }
+    ],
+    "stages": [
+      2,
+      4
+    ],
+    "data_type": [
+      {
+        "a": "f32",
+        "b": "f32",
+        "c": "f32"
+      },
+      {
+        "a": "f16",
+        "b": "f16",
+        "c": "f32"
+      }
+    ],
+    "layout": [
+      {
+        "a": "row",
+        "b": "col"
+      }
+    ],
+    "alignment": [
+      16
+    ],
+    "accumulator_type": [
+      "f32"
+    ]
+  }
+}
