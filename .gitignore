@@ -7,3 +7,5 @@ __pycache__/
 *.pyc
 /tmp/
 probes/*.json
+uma_bw_results.json
+uma_atomic_results.json
