@@ -16,3 +16,11 @@ cd .. && ./sweep/run_sweep.sh
 
 
 See [ENGINEERING.md](ENGINEERING.md) for field reference, requirements, known driver gaps, and contributing instructions.
+
+## Author
+
+parallelArchitect — Human-directed GPU engineering with AI assistance
+
+## License
+
+[MIT License](LICENSE)
