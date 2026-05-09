@@ -49,6 +49,23 @@ cd probes && make gb10
 
 ---
 
+## Output
+
+The sweep automatically generates two files in `results/`:
+
+```
+results/
+├── sweep_gb10_20260508_223941.jsonl       # Raw measurement data (ground truth)
+└── sweep_analysis_20260508_223941.txt     # Human-readable analysis report
+```
+
+**JSONL** — machine-readable, all raw measurements
+**Analysis report** — interpreted thermal, performance, and system health summary
+
+Both files are generated automatically. The report is printed to stdout at sweep completion.
+
+---
+
 ## JSONL output fields
 
 ### Sweep axes
@@ -134,8 +151,13 @@ cd gb10-kernel-probe/probes && make gb10
 cd .. && ./sweep/run_sweep.sh
 ```
 
-Share the `results/sweep_gb10_*.jsonl` file.
+The sweep generates two output files in `results/`:
+- `sweep_gb10_*.jsonl` — raw data
+- `sweep_analysis_*.txt` — human-readable report
+
+Share both files when reporting results.
 Contact: github.com/parallelArchitect
 ```
+
 
 
