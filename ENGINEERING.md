@@ -12,6 +12,23 @@
 
 Dependencies: `nvcc`, `cuobjdump`, `nvidia-smi`, `jq`, `python3`
 
+### CUTLASS Installation
+
+The sweep tool requires CUTLASS. Install it:
+
+```bash
+cd ~
+git clone https://github.com/NVIDIA/cutlass.git
+export CUTLASS_DIR=~/cutlass
+```
+
+Before building, set the environment variable:
+
+```bash
+export CUTLASS_DIR=~/cutlass
+cd probes && make gb10
+```
+
 ---
 
 ## Build
@@ -119,3 +136,6 @@ cd .. && ./sweep/run_sweep.sh
 
 Share the `results/sweep_gb10_*.jsonl` file.
 Contact: github.com/parallelArchitect
+```
+
+
