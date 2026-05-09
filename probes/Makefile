@@ -7,10 +7,10 @@
 #   make uma  — build UMA probes
 #   make clean — remove built binaries
 
-CUTLASS_DIR := $(HOME)/opt_cuda/cutlass
+CUTLASS_DIR := ./cutlass_headers
 NVCC := nvcc
 NVCC_FLAGS := -O2 -std=c++17
-CUTLASS_FLAGS := -I$(CUTLASS_DIR)/include -I$(CUTLASS_DIR)/tools/util/include
+CUTLASS_FLAGS := -I$(CUTLASS_DIR)
 UMA_LIBS := -lcudart -lpthread
 
 .PHONY: all gb10 uma clean
