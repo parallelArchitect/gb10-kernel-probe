@@ -15,7 +15,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 CONFIG="${SCRIPT_DIR}/sweep_config.json"
-PROBE="${REPO_ROOT}/probes/gemm_probe"
+PROBE="/home/emile/opt_cuda/src/gb10-kernel-probe/probes/gemm_probe"
 CLASSIFIER="${REPO_ROOT}/ptx_analysis/classify_ptx.py"
 DRY_RUN=0
 STRICT=0
@@ -362,4 +362,19 @@ echo ""
 if [[ -f "$RESULTS_FILE" && $DRY_RUN -eq 0 ]]; then
     echo "--- TFLOPS by tb_shape ---"
     jq -r '[.tb_shape, .tflops|tostring] | join(" -> ")' "$RESULTS_FILE" 2>/dev/null | sort -u
+fi
+
+# Auto-analyze results
+if [[ -f "$RESULTS_FILE" && $DRY_RUN -eq 0 ]]; then
+    python3 "${REPO_ROOT}/ptx_analysis/analyze_sweep.py" "$RESULTS_FILE"
+fi
+
+# Auto-analyze results
+if [[ -f "$RESULTS_FILE" && $DRY_RUN -eq 0 ]]; then
+    python3 "${REPO_ROOT}/ptx_analysis/analyze_sweep.py" "$RESULTS_FILE"
+fi
+
+# Auto-analyze results
+if [[ -f "$RESULTS_FILE" && $DRY_RUN -eq 0 ]]; then
+    python3 "${REPO_ROOT}/ptx_analysis/analyze_sweep.py" "$RESULTS_FILE"
 fi
