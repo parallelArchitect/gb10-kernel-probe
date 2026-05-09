@@ -1,16 +1,21 @@
 # Makefile — gb10-kernel-probe/probes
 # Builds all probe binaries for GB10 SM121a.
 #
-# Usage:
-#   make      — build all probes
-#   make gb10 — build gemm_probe for GB10 SM121a
-#   make uma  — build UMA probes
-#   make clean — remove built binaries
+# Auto-detects CUTLASS location. Override with: CUTLASS_DIR=/path make gb10
 
-CUTLASS_DIR := ./cutlass_headers
+ifndef CUTLASS_DIR
+    ifeq ($(shell test -d $(HOME)/opt_cuda/cutlass && echo yes), yes)
+        CUTLASS_DIR := $(HOME)/opt_cuda/cutlass
+    else ifeq ($(shell test -d /opt/cutlass && echo yes), yes)
+        CUTLASS_DIR := /opt/cutlass
+    else
+        $(error CUTLASS not found. Install CUTLASS or set CUTLASS_DIR=/path/to/cutlass)
+    endif
+endif
+
 NVCC := nvcc
 NVCC_FLAGS := -O2 -std=c++17
-CUTLASS_FLAGS := -I$(CUTLASS_DIR)
+CUTLASS_FLAGS := -I$(CUTLASS_DIR)/include -I$(CUTLASS_DIR)/tools/util/include
 UMA_LIBS := -lcudart -lpthread
 
 .PHONY: all gb10 uma clean
