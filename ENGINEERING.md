@@ -12,6 +12,23 @@
 
 Dependencies: `nvcc`, `cuobjdump`, `nvidia-smi`, `jq`, `python3`
 
+### CUTLASS Installation
+
+The sweep tool requires CUTLASS. Install it:
+
+```bash
+cd ~
+git clone https://github.com/NVIDIA/cutlass.git
+export CUTLASS_DIR=~/cutlass
+```
+
+Before building, set the environment variable:
+
+```bash
+export CUTLASS_DIR=~/cutlass
+cd probes && make gb10
+```
+
 ---
 
 ## Build
@@ -32,6 +49,23 @@ cd probes && make gb10
 
 ---
 
+## Output
+
+The sweep automatically generates two files in `results/`:
+
+```
+results/
+├── sweep_gb10_20260508_223941.jsonl       # Raw measurement data (ground truth)
+└── sweep_analysis_20260508_223941.txt     # Human-readable analysis report
+```
+
+**JSONL** — machine-readable, all raw measurements
+**Analysis report** — interpreted thermal, performance telemetry, and system health summary
+
+Both files are generated automatically. The report is printed to stdout at sweep completion.
+
+---
+
 ## JSONL output fields
 
 ### Sweep axes
@@ -46,19 +80,19 @@ cd probes && make gb10
 | `alignment` | Memory alignment bytes |
 | `cluster_shape` | Thread block cluster (1x1x1 / 2x1x1 / 2x2x1) |
 
-### Performance
+### Performance telemetry
 | Field | Description |
 |---|---|
 | `tflops` | Measured TFLOPS |
 | `smem_bytes` | Shared memory per block |
-| `occupancy` | Warp occupancy 0.0–1.0 |
+| `occupancy` | Estimated warp occupancy 0.0–1.0 |
 
 ### PTX classification — per kernel, not cumulative
 | Field | Description |
 |---|---|
 | `instruction_path` | Primary MMA form (none / mma.sync / mxf4nvf4) |
 | `vectorization` | Load path (scalar / ldmatrix / cp_async) |
-| `ptx_barrier_type` | Barrier type (bar.sync / mbarrier) |
+| `ptx_barrier_type` | Barrier classification (bar.sync / mbarrier) |
 | `pipeline_hint` | Pipeline pattern |
 | `ptx_regs` | Register count |
 
@@ -66,7 +100,7 @@ cd probes && make gb10
 | Field | Description |
 |---|---|
 | `gpu_temp_c` | GPU temperature |
-| `gpu_power_w` | Power draw (spbm_hwmon → nvml → null) |
+| `gpu_power_w` | Power draw (spbm_hwmon → NVML fallback) |
 | `gpu_power_source` | Power data source |
 | `clk_sm_mhz` | SM clock |
 | `clk_gr_mhz` | Graphics clock |
@@ -77,9 +111,9 @@ cd probes && make gb10
 
 ---
 
-## Pre-run check
+## Pre-run validation
 
-Runs automatically before every sweep. Blocks on:
+Runs automatically before every sweep. Telemetry path issues detected:
 - DOE mailbox failure in dmesg — Class 4 PCIe degradation
 - CUDA 13.1 or 13.2 on GB10
 
@@ -117,5 +151,9 @@ cd gb10-kernel-probe/probes && make gb10
 cd .. && ./sweep/run_sweep.sh
 ```
 
-Share the `results/sweep_gb10_*.jsonl` file.
+The sweep generates two output files in `results/`:
+- `sweep_gb10_*.jsonl` — raw data
+- `sweep_analysis_*.txt` — human-readable report
+
+Share both files when reporting results.
 Contact: github.com/parallelArchitect
