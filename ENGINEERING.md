@@ -12,23 +12,6 @@
 
 Dependencies: `nvcc`, `cuobjdump`, `nvidia-smi`, `jq`, `python3`
 
-### CUTLASS Installation
-
-The sweep tool requires CUTLASS. Install it:
-
-```bash
-cd ~
-git clone https://github.com/NVIDIA/cutlass.git
-export CUTLASS_DIR=~/cutlass
-```
-
-Before building, set the environment variable:
-
-```bash
-export CUTLASS_DIR=~/cutlass
-cd probes && make gb10
-```
-
 ---
 
 ## Build
@@ -46,23 +29,6 @@ cd probes && make gb10
 ./sweep/run_sweep.sh --full     # complete axis coverage
 ./sweep/run_sweep.sh --dry-run  # validate platform, no execution
 ```
-
----
-
-## Output
-
-The sweep automatically generates two files in `results/`:
-
-```
-results/
-├── sweep_gb10_20260508_223941.jsonl       # Raw measurement data (ground truth)
-└── sweep_analysis_20260508_223941.txt     # Human-readable analysis report
-```
-
-**JSONL** — machine-readable, all raw measurements
-**Analysis report** — interpreted thermal, performance, and system health summary
-
-Both files are generated automatically. The report is printed to stdout at sweep completion.
 
 ---
 
@@ -151,13 +117,5 @@ cd gb10-kernel-probe/probes && make gb10
 cd .. && ./sweep/run_sweep.sh
 ```
 
-The sweep generates two output files in `results/`:
-- `sweep_gb10_*.jsonl` — raw data
-- `sweep_analysis_*.txt` — human-readable report
-
-Share both files when reporting results.
+Share the `results/sweep_gb10_*.jsonl` file.
 Contact: github.com/parallelArchitect
-```
-
-
-
